@@ -1,0 +1,138 @@
+/* ========================================
+   TABLE STYLES
+   ======================================== */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  background: var(--card-bg);
+  color: var(--card-text);
+}
+
+/* ========================================
+   TABLE HEADER
+   ======================================== */
+
+th {
+  background: var(--bg-tertiary);
+  padding: 14px;
+  text-align: left;
+  font-weight: 700;
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--border-color);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ========================================
+   TABLE BODY
+   ======================================== */
+
+td {
+  padding: 14px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+/* ========================================
+   TABLE ROW STYLING
+   ======================================== */
+
+tr {
+  transition: background 0.2s ease;
+}
+
+tr:hover {
+  background: var(--bg-hover);
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+/* ========================================
+   TABLE CELL VARIANTS
+   ======================================== */
+
+.id-cell {
+  color: var(--text-tertiary);
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+}
+
+.name-cell {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.stock-cell {
+  text-align: center;
+}
+
+.stock-badge {
+  background: var(--badge-bg);
+  color: var(--badge-text);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 13px;
+  display: inline-block;
+}
+
+.status-cell {
+  text-align: center;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Status Badge Colors */
+.status-danger {
+  background: var(--badge-bg);
+  color: var(--badge-text);
+  border: 1px solid var(--color-primary);
+}
+
+.status-warning {
+  background: rgba(245, 158, 11, 0.1);
+  color: #b45309;
+  border: 1px solid #fcd34d;
+}
+
+.status-success {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--color-success);
+  border: 1px solid var(--color-success);
+}
+
+.actions-cell {
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* ========================================
+   TABLE RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+  table {
+    font-size: 12px;
+  }
+
+  th,
+  td {
+    padding: 10px;
+  }
+
+  .actions-cell {
+    text-align: left;
+    white-space: normal;
+  }
+}

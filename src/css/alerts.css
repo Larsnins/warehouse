@@ -1,0 +1,118 @@
+/* ========================================
+   ALERT & NOTIFICATION STYLES
+   ======================================== */
+
+.alert {
+  padding: 14px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  border-left: 4px solid;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ========================================
+   ALERT SUCCESS
+   ======================================== */
+
+.alert-success {
+  background: #ecfdf5;
+  color: #065f46;
+  border-left-color: #10b981;
+}
+
+.alert-success-icon {
+  color: #10b981;
+  font-size: 18px;
+}
+
+/* ========================================
+   ALERT ERROR
+   ======================================== */
+
+.alert-error {
+  background: #fef2f2;
+  color: #7f1d1d;
+  border-left-color: #dc2626;
+}
+
+.alert-error-icon {
+  color: #dc2626;
+  font-size: 18px;
+}
+
+/* ========================================
+   ALERT WARNING
+   ======================================== */
+
+.alert-warning {
+  background: #fffbeb;
+  color: #78350f;
+  border-left-color: #f59e0b;
+}
+
+.alert-warning-icon {
+  color: #f59e0b;
+  font-size: 18px;
+}
+
+/* ========================================
+   ALERT INFO
+   ======================================== */
+
+.alert-info {
+  background: #eff6ff;
+  color: #1e40af;
+  border-left-color: #3b82f6;
+}
+
+.alert-info-icon {
+  color: #3b82f6;
+  font-size: 18px;
+}
+
+/* ========================================
+   TOAST NOTIFICATION
+   ======================================== */
+
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: white;
+  border-radius: 8px;
+  padding: 16px 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  z-index: 2000;
+  animation: slideInRight 0.3s ease;
+  max-width: 400px;
+}
+
+.toast.toast-success {
+  border-left: 4px solid #10b981;
+}
+
+.toast.toast-error {
+  border-left: 4px solid #dc2626;
+}
+
+.toast.toast-warning {
+  border-left: 4px solid #f59e0b;
+}
+
+.toast.toast-info {
+  border-left: 4px solid #3b82f6;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
