@@ -1,21 +1,33 @@
-import { request } from './http.js'
+// store/items.js
+import { defineStore } from 'pinia'
+import { listItems, getItem, createItem, updateItem, deleteItem } from '../api/items.js'
 
-export function listItems() {
-  return request('/items')
-}
-
-export function getItem(id) {
-  return request(`/items/${id}`)
-}
-
-export function createItem(payload) {
-  return request('/items', { method: 'POST', body: payload })
-}
-
-export function updateItem(id, payload) {
-  return request(`/items/${id}`, { method: 'PUT', body: payload })
-}
-
-export function deleteItem(id) {
-  return request(`/items/${id}`, { method: 'DELETE' })
-}
+export const useItemsStore = defineStore('items', {
+  state: () => ({
+    items: []
+  }),
+  actions: {
+    async fetch() {
+      // fetch items from API and update the reactive array
+      this.items = await listItems()
+    },
+    async fetchOne(id) {
+      return await getItem(id)
+    },
+    async create(payload) {
+      const item = await createItem(payload)
+      // update reactive state correctly
+      this.items = [...this.items, item]
+      return item
+    },
+    async update(id, payload) {
+      const updated = await updateItem(id, payload)
+      this.items = this.items.map(i => i.id === id ? updated : i)
+      return updated
+    },
+    async remove(id) {
+      await deleteItem(id)
+      this.items = this.items.filter(i => i.id !== id)
+    }
+  }
+})

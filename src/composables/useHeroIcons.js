@@ -4,7 +4,6 @@ import {
   ShoppingCartIcon,
   ChartBarIcon,
   Cog6ToothIcon,
-  ArrowRightOnRectangleIcon,
 } from '@heroicons/vue/24/outline';
 
 export function useHeroIcons() {

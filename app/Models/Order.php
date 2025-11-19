@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $casts = [
-        'data' => 'array',
+    protected $fillable = [
+        'reference',
+        'data'
     ];
 
-    protected $fillable = ['reference', 'data'];
+    protected $casts = [
+        'data' => 'array'
+    ];
 }

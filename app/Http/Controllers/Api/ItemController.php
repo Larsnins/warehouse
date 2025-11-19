@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Item;
 use Illuminate\Http\Request;
+
+use App\Models\Item;
 
 class ItemController extends Controller
 {
     public function index()
     {
-        return Item::orderBy('id', 'desc')->get();
+        return Item::all(); // Returns all items from MySQL
     }
 
     public function show($id)
@@ -20,23 +21,20 @@ class ItemController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate(['name' => 'required|string', 'stock' => 'nullable|integer']);
-        $item = Item::create($data);
-        return response()->json($item, 201);
+        $item = Item::create($request->only(['name','stock']));
+        return $item;
     }
 
     public function update(Request $request, $id)
     {
-        $data = $request->validate(['name' => 'required|string', 'stock' => 'nullable|integer']);
         $item = Item::findOrFail($id);
-        $item->update($data);
+        $item->update($request->only(['name','stock']));
         return $item;
     }
 
     public function destroy($id)
     {
-        $item = Item::findOrFail($id);
-        $item->delete();
-        return response()->json(null, 204);
+        Item::destroy($id);
+        return response()->json(['message' => 'Item deleted']);
     }
 }

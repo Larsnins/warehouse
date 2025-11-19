@@ -1,85 +1,37 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
-import { request } from '../api/http.js'
+import { listItems, createItem, updateItem, deleteItem } from '../api/items.js'
 
-export const useItemsStore = defineStore('items', () => {
-  const items = ref([])
-  const loading = ref(false)
-  const error = ref(null)
-
-  const totalItems = computed(() => items.value.length)
-  const lowStockItems = computed(() => items.value.filter(item => item.stock < 20))
-  const totalInventoryValue = computed(() => 
-    items.value.reduce((sum, item) => sum + (item.price * item.stock), 0)
-  )
-
-  async function fetch() {
-    loading.value = true
-    error.value = null
-    try {
-      const data = await request('/items')
-      items.value = data
-    } catch (err) {
-      error.value = err.message
-    } finally {
-      loading.value = false
+export const useItemsStore = defineStore('items', {
+  state: () => ({
+    items: [], // array of items
+    loading: false
+  }),
+  actions: {
+    async fetch() {
+      this.loading = true
+      try {
+        const data = await listItems()
+        this.items = Array.isArray(data) ? data : []
+      } finally {
+        this.loading = false
+      }
+    },
+    async add(payload) {
+      const newItem = await createItem(payload)
+      // ensure items is array
+      if (!Array.isArray(this.items)) this.items = []
+      this.items.push(newItem)
+      return newItem
+    },
+    async updateItem(id, payload) {
+      const updated = await updateItem(id, payload)
+      const index = this.items.findIndex(i => i.id === id)
+      if (index !== -1) this.items[index] = updated
+      return updated
+    },
+    async remove(id) {
+      await deleteItem(id)
+      this.items = this.items.filter(i => i.id !== id)
     }
-  }
-
-  async function create(payload) {
-    try {
-      const data = await request('/items', { method: 'POST', body: payload })
-      items.value.push(data)
-      return data
-    } catch (err) {
-      error.value = err.message
-      throw err
-    }
-  }
-
-  async function update(id, payload) {
-    try {
-      const data = await request(`/items/${id}`, { method: 'PUT', body: payload })
-      const index = items.value.findIndex(item => item.id === id)
-      if (index !== -1) items.value[index] = data
-      return data
-    } catch (err) {
-      error.value = err.message
-      throw err
-    }
-  }
-
-  async function remove(id) {
-    try {
-      await request(`/items/${id}`, { method: 'DELETE' })
-      items.value = items.value.filter(item => item.id !== id)
-    } catch (err) {
-      error.value = err.message
-      throw err
-    }
-  }
-
-  async function fetchOne(id) {
-    try {
-      const data = await request(`/items/${id}`)
-      return data
-    } catch (err) {
-      error.value = err.message
-      throw err
-    }
-  }
-
-  return {
-    items,
-    loading,
-    error,
-    totalItems,
-    lowStockItems,
-    totalInventoryValue,
-    fetch,
-    create,
-    update,
-    remove,
-    fetchOne
   }
 })

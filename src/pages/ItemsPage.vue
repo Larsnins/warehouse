@@ -1,8 +1,8 @@
 <template>
   <div>
     <!-- Header with Add Button -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-      <h2 style="color: #1a202c; font-size: 28px; font-weight: 700; margin: 0;">📦 Inventory Management</h2>
+    <div class="header">
+      <h2>📦 Inventory Management</h2>
       <router-link to="/items/add" class="btn btn-primary">
         ➕ Add New Item
       </router-link>
@@ -11,14 +11,12 @@
     <!-- Loading State -->
     <div v-if="loading" class="loading">
       <div class="spinner"></div>
-      <p style="color: #9ca3af; font-weight: 500;">Loading inventory...</p>
+      <p>Loading inventory...</p>
     </div>
 
     <!-- Empty State -->
     <div v-else-if="items.length === 0" class="empty-state-card">
-      <p style="color: #6b7280; text-align: center; font-size: 16px; margin: 0;">
-        📭 No items in inventory. <router-link to="/items/add" style="color: #dc2626; font-weight: 600;">Add your first item</router-link>.
-      </p>
+      <p>📭 No items in inventory. <router-link to="/items/add" class="add-link">Add your first item</router-link>.</p>
     </div>
 
     <!-- Items Table -->
@@ -36,36 +34,16 @@
         <tbody>
           <tr v-for="item in items" :key="item.id" class="table-row">
             <td class="id-cell">#{{ item.id }}</td>
-            <td class="name-cell"><strong>{{ item.name }}</strong></td>
-            <td class="stock-cell">
-              <span class="stock-badge">{{ item.stock }}</span>
-            </td>
+            <td class="name-cell">{{ item.name }}</td>
+            <td class="stock-cell"><span class="stock-badge">{{ item.stock }}</span></td>
             <td class="status-cell">
-              <span v-if="item.stock < 10" class="status-badge status-danger">
-                🚨 Low Stock
-              </span>
-              <span v-else-if="item.stock < 50" class="status-badge status-warning">
-                ⚠️ Medium
-              </span>
-              <span v-else class="status-badge status-success">
-                ✓ In Stock
-              </span>
+              <span v-if="item.stock < 10" class="status-badge status-danger">🚨 Low Stock</span>
+              <span v-else-if="item.stock < 50" class="status-badge status-warning">⚠️ Medium</span>
+              <span v-else class="status-badge status-success">✓ In Stock</span>
             </td>
             <td class="actions-cell">
-              <router-link
-                :to="`/items/${item.id}/edit`"
-                class="btn btn-secondary"
-                style="padding: 6px 12px; font-size: 12px; display: inline-block;"
-              >
-                ✏️ Edit
-              </router-link>
-              <button
-                @click="deleteItem(item.id)"
-                class="btn btn-danger"
-                style="padding: 6px 12px; font-size: 12px; display: inline-block; margin-left: 6px;"
-              >
-                🗑️ Delete
-              </button>
+              <router-link :to="`/items/${item.id}/edit`" class="btn btn-secondary">✏️ Edit</router-link>
+              <button @click="deleteItem(item.id)" class="btn btn-danger">🗑️ Delete</button>
             </td>
           </tr>
         </tbody>
@@ -75,31 +53,99 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { useItemsStore } from '../store/items.js';
-import '../css/pages/ItemsPage.css';
+import { ref, onMounted } from 'vue'
+import { useItemsStore } from '../store/items.js'
 
-const store = useItemsStore();
-const loading = ref(true);
-const items = ref<any[]>([]);
+interface Item {
+  id: number
+  name: string
+  stock: number
+}
+
+const store = useItemsStore()
+const items = ref<Item[]>([])
+const loading = ref(true)
 
 onMounted(async () => {
   try {
-    await store.fetch();
-    items.value = store.items;
+    await store.fetch()
+    items.value = store.items as Item[]
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-});
+})
 
-const deleteItem = async (id: any) => {
+const deleteItem = async (id: number) => {
   if (confirm('Are you sure you want to delete this item?')) {
-    await store.remove(id);
+    await store.remove(id)
+    items.value = items.value.filter(i => i.id !== id)
   }
-};
+}
 </script>
 
 <style scoped>
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.header h2 {
+  color: #1a202c;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.btn {
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: #dc2626;
+  color: white;
+  border: none;
+}
+
+.btn-secondary {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+}
+
+.btn-danger {
+  background-color: #991b1b;
+  color: white;
+  border: none;
+  margin-left: 6px;
+}
+
+/* Loading spinner */
+.loading {
+  text-align: center;
+  padding: 60px 0;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #fee2e2;
+  border-top: 4px solid #dc2626;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 16px auto;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Empty state */
 .empty-state-card {
   background: linear-gradient(135deg, #fef2f2 0%, #fff5f5 100%);
   border: 2px dashed #fca5a5;
@@ -108,57 +154,48 @@ const deleteItem = async (id: any) => {
   text-align: center;
 }
 
+.add-link {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+/* Table */
 .table-card {
   background: white;
   border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 6px rgba(220, 38, 38, 0.08);
+  overflow-x: auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
 }
 
 .items-table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
-}
-
-.items-table thead {
-  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
 }
 
 .items-table th {
-  padding: 14px;
+  padding: 12px;
   text-align: left;
   font-weight: 700;
   color: #991b1b;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border-bottom: 2px solid #fca5a5;
+  background-color: #fee2e2;
 }
 
-.table-row {
+.items-table td {
+  padding: 12px;
   border-bottom: 1px solid #e5e7eb;
-  transition: background 0.2s ease;
 }
 
 .table-row:hover {
   background: #fef2f2;
 }
 
-.table-row td {
-  padding: 14px;
-  color: #374151;
-  font-size: 14px;
-}
-
 .id-cell {
   color: #9ca3af;
-  font-weight: 600;
   font-family: 'Courier New', monospace;
+  font-weight: 600;
 }
 
 .name-cell {
-  color: #1a202c;
   font-weight: 600;
 }
 
@@ -167,12 +204,10 @@ const deleteItem = async (id: any) => {
 }
 
 .stock-badge {
-  background: linear-gradient(135deg, #fecaca 0%, #fee2e2 100%);
+  background: #fee2e2;
   color: #dc2626;
-  padding: 6px 12px;
+  padding: 4px 8px;
   border-radius: 6px;
-  font-weight: 700;
-  font-size: 13px;
 }
 
 .status-cell {
@@ -181,9 +216,8 @@ const deleteItem = async (id: any) => {
 
 .status-badge {
   display: inline-block;
-  padding: 6px 12px;
+  padding: 4px 8px;
   border-radius: 6px;
-  font-size: 12px;
   font-weight: 600;
 }
 
@@ -207,26 +241,5 @@ const deleteItem = async (id: any) => {
 
 .actions-cell {
   text-align: right;
-  white-space: nowrap;
-}
-
-.loading {
-  text-align: center;
-  padding: 60px 20px;
-}
-
-.spinner {
-  display: inline-block;
-  width: 40px;
-  height: 40px;
-  border: 4px solid #fee2e2;
-  border-top: 4px solid #dc2626;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 16px;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
 }
 </style>

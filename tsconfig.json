@@ -120,11 +120,11 @@
     "include": [
         "src/**/*.ts",
         "src/**/*.d.ts",
-        "src/**/*.tsx", 
+        "src/**/*.tsx",
         "src/**/*.vue",
         "resources/js/**/*.ts",
         "resources/js/**/*.d.ts",
-        "resources/js/**/*.tsx", 
+        "resources/js/**/*.tsx",
         "resources/js/**/*.vue"
-    ]
+, "src/composables/useHeroIcons.js", "resources/js/ssr.js"    ]
 }
