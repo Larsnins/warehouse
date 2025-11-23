@@ -2,31 +2,25 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ItemController;
 use App\Http\Controllers\Api\OrderController;
 
-// -----------------------------
-// AUTH ROUTES
-// -----------------------------
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout']);
-Route::get('/me', [AuthController::class, 'me']); // fetch current user
+// List all items
+Route::get('/items', [ItemController::class, 'index']);
 
-// -----------------------------
-// ITEM ROUTES
-// -----------------------------
-Route::get('/items', [ItemController::class, 'index']);        // get all items
-Route::get('/items/{id}', [ItemController::class, 'show']);    // get single item
-Route::post('/items', [ItemController::class, 'store']);       // create item
-Route::put('/items/{id}', [ItemController::class, 'update']);  // update item
-Route::delete('/items/{id}', [ItemController::class, 'destroy']); // delete item
+// Get single item
+Route::get('/items/{id}', [ItemController::class, 'show']);
 
-// -----------------------------
-// ORDER ROUTES
-// -----------------------------
-Route::get('/orders', [OrderController::class, 'index']);        // get all orders
-Route::get('/orders/{id}', [OrderController::class, 'show']);    // get single order
-Route::post('/orders', [OrderController::class, 'store']);       // create order
-Route::put('/orders/{id}', [OrderController::class, 'update']);  // update order
-Route::delete('/orders/{id}', [OrderController::class, 'destroy']); // delete order
+// Create item
+Route::post('/items', [ItemController::class, 'store']);
+
+// Update item
+Route::put('/items/{id}', [ItemController::class, 'update']);
+
+// Delete item
+Route::delete('/items/{id}', [ItemController::class, 'destroy']);
+
+// Orders API
+Route::get('/orders', [OrderController::class, 'index']);
+Route::get('/orders/{id}', [OrderController::class, 'show']);
+Route::post('/orders', [OrderController::class, 'store']);

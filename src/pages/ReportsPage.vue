@@ -1,5 +1,5 @@
 <template>
-  <div class="reports-page">
+  <div class="page section-stack compact">
     <h2>Reports & Analytics</h2>
 
     <div class="reports-grid">
@@ -14,7 +14,7 @@
         <h3>Orders Report</h3>
         <p>Total orders: {{ totalOrders }}</p>
         <p>Recent orders (today): {{ recentOrders }}</p>
-        <p>Total value: ${{ totalValue.toFixed(2) }}</p>
+        <p>Total value: ₱{{ totalValue.toFixed(2) }}</p>
       </div>
     </div>
   </div>
@@ -56,10 +56,7 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.reports-page {
-  padding: 24px;
-  font-family: Arial, sans-serif;
-}
+/* Font family retained globally; removed redundant wrapper class */
 
 h2 {
   font-size: 24px;
@@ -73,12 +70,7 @@ h2 {
   gap: 20px;
 }
 
-.card {
-  padding: 20px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-}
+.card { /* inherits global .card utility; no local overrides */ }
 
 .card h3 {
   font-size: 18px;

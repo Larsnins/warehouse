@@ -14,7 +14,7 @@ defineProps<{
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+  <div class="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
     <Head title="Warehouse App" />
 
     <!-- Navbar -->
@@ -27,7 +27,7 @@ defineProps<{
     </nav>
 
     <!-- Breadcrumbs -->
-    <div v-if="breadcrumbs.length" class="bg-gray-200 dark:bg-gray-700 p-3 text-sm">
+    <div v-if="breadcrumbs.length" class="bg-white dark:bg-gray-700 p-3 text-sm">
       <template v-for="(crumb, index) in breadcrumbs" :key="index">
         <Link
           :href="crumb.href"

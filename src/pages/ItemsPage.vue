@@ -1,49 +1,53 @@
 <template>
-  <div>
-    <!-- Header with Add Button -->
-    <div class="header">
-      <h2>📦 Inventory Management</h2>
-      <router-link to="/items/add" class="btn btn-primary">
-        ➕ Add New Item
-      </router-link>
+  <div class="page">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl font-bold text-slate-800">Inventory</h2>
+        <div class="flex items-center gap-2">
+            <router-link to="/items/add" class="px-3 bg-red-700 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"><span>+ Add item</span></router-link>
+            <button @click="refetchAll" class="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Refresh</button>
+            <button @click="handleExportData" class="px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700">Export CSV</button>
+          </div>
     </div>
 
-    <!-- Loading State -->
-    <div v-if="loading" class="loading">
-      <div class="spinner"></div>
-      <p>Loading inventory...</p>
+    <div v-if="loading" class="text-center py-16">
+      <div class="mx-auto w-10 h-10 border-4 border-red-100 border-t-red-600 rounded-full animate-spin"></div>
+      <p class="mt-4 text-slate-600">Loading inventory...</p>
     </div>
 
-    <!-- Empty State -->
-    <div v-else-if="items.length === 0" class="empty-state-card">
-      <p>📭 No items in inventory. <router-link to="/items/add" class="add-link">Add your first item</router-link>.</p>
+    <div v-else-if="items.length === 0" class="rounded-lg p-8 bg-red-50 border border-red-100 text-center">
+      <p class="text-slate-700">No items in inventory. <router-link to="/items/add" class="text-red-600 font-semibold">Add your first item</router-link>.</p>
     </div>
 
-    <!-- Items Table -->
-    <div v-else class="table-card">
-      <table class="items-table">
-        <thead>
+    <div v-else class="ui-card overflow-x-auto">
+      <table class="w-full min-w-[640px] table-auto">
+        <thead class="bg-red-50 text-left text-sm font-semibold text-red-700">
           <tr>
-            <th>ID</th>
-            <th>Item Name</th>
-            <th>Current Stock</th>
-            <th>Status</th>
-            <th>Actions</th>
+            <th class="px-4 py-3">ID</th>
+            <th class="px-4 py-3">Item Name</th>
+            <th class="px-4 py-3 text-center">Current Stock</th>
+            <th class="px-4 py-3 text-center">Status</th>
+            <th class="px-4 py-3 text-right">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in items" :key="item.id" class="table-row">
-            <td class="id-cell">#{{ item.id }}</td>
-            <td class="name-cell">{{ item.name }}</td>
-            <td class="stock-cell"><span class="stock-badge">{{ item.stock }}</span></td>
-            <td class="status-cell">
-              <span v-if="item.stock < 10" class="status-badge status-danger">🚨 Low Stock</span>
-              <span v-else-if="item.stock < 50" class="status-badge status-warning">⚠️ Medium</span>
-              <span v-else class="status-badge status-success">✓ In Stock</span>
+          <tr v-for="item in items" :key="item.id" class="hover:bg-red-50">
+            <td class="px-4 py-3 text-sm text-slate-500">#{{ item.id }}</td>
+            <td class="px-4 py-3 font-medium text-slate-800">{{ item.name }}</td>
+            <td class="px-4 py-3 text-center"><span class="inline-flex items-center px-2 py-0.5 rounded-md text-sm font-semibold bg-red-50 text-red-700">{{ item.stock }}</span></td>
+            <td class="px-4 py-3 text-center">
+              <span v-if="item.stock < 10" class="inline-flex items-center gap-2 text-sm font-semibold text-red-700">🚨 Low</span>
+              <span v-else-if="item.stock < 50" class="inline-flex items-center gap-2 text-sm font-semibold text-amber-700">⚠️ Medium</span>
+              <span v-else class="inline-flex items-center gap-2 text-sm font-semibold text-emerald-700">✓ In Stock</span>
             </td>
-            <td class="actions-cell">
-              <router-link :to="`/items/${item.id}/edit`" class="btn btn-secondary">✏️ Edit</router-link>
-              <button @click="deleteItem(item.id)" class="btn btn-danger">🗑️ Delete</button>
+            <td class="px-4 py-3 text-right">
+              <router-link :to="`/items/${item.id}/edit`" class="inline-flex items-center gap-2 text-sm px-2 py-1 rounded-md bg-sky-600 text-white hover:bg-sky-700">
+                <PencilSquareIcon class="w-4 h-4" />
+                Edit
+              </router-link>
+              <button @click="deleteItem(item.id)" class="inline-flex items-center gap-2 text-sm px-2 py-1 rounded-md bg-rose-600 text-white hover:bg-rose-700 ml-2">
+                <TrashIcon class="w-4 h-4" />
+                Delete
+              </button>
             </td>
           </tr>
         </tbody>
@@ -55,12 +59,20 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useItemsStore } from '../store/items.js'
+import { PlusIcon, PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline'
 
 interface Item {
   id: number
   name: string
   stock: number
 }
+
+async function refetchAll() {
+  loading.value = true
+  await Promise.all([itemsStore.fetch(), ordersStore.fetch()])
+  loading.value = false
+}
+
 
 const store = useItemsStore()
 const items = ref<Item[]>([])
@@ -242,4 +254,5 @@ const deleteItem = async (id: number) => {
 .actions-cell {
   text-align: right;
 }
+/* Styling moved to Tailwind utility classes in the template. */
 </style>

@@ -1,33 +1,11 @@
-// store/items.js
-import { defineStore } from 'pinia'
-import { listItems, getItem, createItem, updateItem, deleteItem } from '../api/items.js'
+import axios from 'axios'
 
-export const useItemsStore = defineStore('items', {
-  state: () => ({
-    items: []
-  }),
-  actions: {
-    async fetch() {
-      // fetch items from API and update the reactive array
-      this.items = await listItems()
-    },
-    async fetchOne(id) {
-      return await getItem(id)
-    },
-    async create(payload) {
-      const item = await createItem(payload)
-      // update reactive state correctly
-      this.items = [...this.items, item]
-      return item
-    },
-    async update(id, payload) {
-      const updated = await updateItem(id, payload)
-      this.items = this.items.map(i => i.id === id ? updated : i)
-      return updated
-    },
-    async remove(id) {
-      await deleteItem(id)
-      this.items = this.items.filter(i => i.id !== id)
-    }
-  }
+const api = axios.create({
+  baseURL: 'http://127.0.0.1:8000/api', // must match php artisan serve
 })
+
+export const listItems = () => api.get('/items').then(res => res.data)
+export const getItem = (id) => api.get(`/items/${id}`).then(res => res.data)
+export const createItem = (payload) => api.post('/items', payload).then(res => res.data)
+export const updateItem = (id, payload) => api.put(`/items/${id}`, payload).then(res => res.data)
+export const deleteItem = (id) => api.delete(`/items/${id}`).then(res => res.data)

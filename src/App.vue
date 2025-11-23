@@ -7,7 +7,7 @@
           <CubeIcon style="width: 24px; height: 24px; color: white;" />
           <div>
             <h1 style="margin: 0; font-weight: 700;">XYM COOPERATION</h1>
-            <p class="subtitle" style="margin: 2px 0 0 0;">Inventory System</p>
+            <p class="subtitle" style="margin: 2px 0 0 0;">Online Inventory System</p>
           </div>
         </div>
 
@@ -178,6 +178,8 @@ export default defineComponent({
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: var(--card-bg);
+  color: var(--card-text);
 }
 
 .header {
@@ -296,7 +298,7 @@ export default defineComponent({
 }
 
 .sidebar {
-  background: var(--bg-primary);
+  background: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 16px;
@@ -314,7 +316,7 @@ export default defineComponent({
 }
 
 .main {
-  background: var(--bg-secondary);
+  background: var(--card-bg);
   border-radius: 8px;
   padding: 20px;
 }

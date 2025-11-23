@@ -1,6 +1,6 @@
 <template>
-  <div class="edit-wrapper">
-    <h2>Edit Item #{{ id }}</h2>
+  <div class="page" style="max-width:600px;">
+    <h2 class="text-2xl font-bold mb-6">Edit Item #{{ id }}</h2>
 
     <!-- Loading -->
     <div v-if="loading" class="loading">
@@ -9,20 +9,20 @@
     </div>
 
     <!-- Edit Form -->
-    <form v-else @submit.prevent="save" class="card">
-      <div class="form-group">
-        <label>Item Name *</label>
-        <input v-model="name" type="text" required />
+    <form v-else @submit.prevent="save" class="ui-card space-y-4">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Item Name *</label>
+          <input v-model="name" type="text" required class="w-full border rounded px-3 py-2 text-sm" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Stock *</label>
+          <input v-model.number="stock" type="number" min="0" required class="w-full border rounded px-3 py-2 text-sm" />
+        </div>
       </div>
-
-      <div class="form-group">
-        <label>Stock *</label>
-        <input v-model.number="stock" type="number" min="0" required />
-      </div>
-
-      <div class="form-actions">
-        <button type="submit" class="btn btn-primary">Update Item</button>
-        <router-link to="/items" class="btn btn-secondary">Cancel</router-link>
+      <div class="flex gap-3 pt-2">
+        <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm">Update Item</button>
+        <router-link to="/items" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">Cancel</router-link>
       </div>
     </form>
   </div>
@@ -76,87 +76,8 @@ const save = async () => {
 </script>
 
 <style scoped>
-.edit-wrapper {
-  padding: 24px;
-  font-family: Arial, sans-serif;
-  max-width: 500px;
-  margin: 0 auto;
-}
-
-h2 {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 24px;
-  color: #1a202c;
-}
-
-/* Loading */
-.loading {
-  text-align: center;
-  padding: 40px 0;
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #fee2e2;
-  border-top: 4px solid #dc2626;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 0 auto 16px auto;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* Form */
-.card {
-  background: white;
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-}
-
-.form-group {
-  margin-bottom: 16px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: 500;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-  font-size: 14px;
-}
-
-.form-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.btn {
-  padding: 8px 16px;
-  border-radius: 6px;
-  border: none;
-  font-size: 14px;
-  cursor: pointer;
-  color: white;
-  text-decoration: none;
-  text-align: center;
-}
-
-.btn-primary {
-  background-color: #dc2626;
-}
-
-.btn-secondary {
-  background-color: #2563eb;
-}
+/* Spinner retained */
+.loading { text-align: center; padding: 40px 0; }
+.spinner { width: 40px; height: 40px; border: 4px solid #fee2e2; border-top: 4px solid #dc2626; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
+@keyframes spin { to { transform: rotate(360deg); } }
 </style>

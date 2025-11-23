@@ -2,14 +2,14 @@
   <div class="login-wrapper">
     <!-- LEFT PANEL -->
     <div class="login-left">
-      <img src="/images/logo.png" alt="Logo" class="logo-img" />
-      <h1 class="system-title">XYM COOPERATION</h1>
-      <p class="system-subtitle">Inventory System</p>
+      <CubeIcon class="logo-img text-red-600" aria-hidden="true" />
+      <h1 class="system-title text-red-600">XYM COOPERATION</h1>
+      <p class="system-subtitle text-white">Inventory System</p>
     </div>
 
     <!-- RIGHT LOGIN FORM -->
     <div class="login-right">
-      <div class="login-card">
+      <div class="login-card ring-1">
         <h2 class="login-header-title">Login</h2>
 
         <div v-if="error" class="error-message">{{ error }}</div>
@@ -33,6 +33,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import UiInput from '../components/ui/InputPage.vue'
+import CubeIcon from '../components/icons/CubeIcon.vue'
 import { useAuthStore } from '../store/auth.js'
 
 const auth = useAuthStore()
@@ -45,13 +46,53 @@ const doLogin = async () => {
   error.value = ''
   loading.value = true
   try {
-    await auth.login(email.value, password.value)
-  } catch (err: unknown) {
-    if (err instanceof Error) {
-      error.value = err.message
-    } else {
-      error.value = 'Login failed.'
+    // Try session-based POST to /login (Fortify/web route). Use credentials to include cookies.
+    // Laravel expects a form POST and a CSRF token header. Use urlencoded body and include XSRF token.
+    function getCookie(name: string) {
+      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'))
+      return match ? decodeURIComponent(match[2]) : null
     }
+
+    const xsrf = getCookie('XSRF-TOKEN')
+    const form = new URLSearchParams()
+    form.append('email', email.value)
+    form.append('password', password.value)
+
+    const res = await fetch('/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        ...(xsrf ? { 'X-XSRF-TOKEN': xsrf } : {})
+      },
+      credentials: 'include',
+      body: form.toString()
+    })
+
+    const text = await res.text()
+    let data: any = null
+    try { data = text ? JSON.parse(text) : null } catch { data = text }
+
+    if (res.ok) {
+      // populate user in store if endpoint supports it
+      try {
+        await auth.fetchUser()
+      } catch {}
+      // redirect to dashboard/home
+      window.location.href = '/dashboard'
+      return
+    }
+
+    // handle validation / error responses
+    if (res.status === 422 && data && typeof data === 'object') {
+      error.value = data.message || 'Validation failed'
+    } else if (data && typeof data === 'object' && data.message) {
+      error.value = data.message
+    } else {
+      error.value = 'Login failed'
+    }
+  } catch (err: unknown) {
+    if (err instanceof Error) error.value = err.message
+    else error.value = 'Login failed'
   } finally {
     loading.value = false
   }
@@ -68,7 +109,7 @@ const doLogin = async () => {
 /* LEFT PANEL */
 .login-left {
   width: 45%;
-  background-color: white;
+  background-color: rgb(0, 0, 0);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -86,12 +127,10 @@ const doLogin = async () => {
 .system-title {
   font-size: 28px;
   font-weight: 700;
-  color: #111827;
 }
 
 .system-subtitle {
   font-size: 18px;
-  color: #4b5563;
   margin-top: 5px;
 }
 
@@ -106,8 +145,7 @@ const doLogin = async () => {
 .login-card {
   width: 350px;
   padding: 25px;
-  background-color: white;
-  border-radius: 10px;
+  border-color: ;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 

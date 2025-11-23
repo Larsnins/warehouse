@@ -1,32 +1,25 @@
 import { defineStore } from 'pinia'
-import { listItems, createItem, updateItem, deleteItem } from '../api/items.js'
+import { listItems, getItem, createItem, updateItem, deleteItem } from '../api/items.js'
 
 export const useItemsStore = defineStore('items', {
   state: () => ({
-    items: [], // array of items
-    loading: false
+    items: [] // plain JS, no type annotation
   }),
   actions: {
     async fetch() {
-      this.loading = true
-      try {
-        const data = await listItems()
-        this.items = Array.isArray(data) ? data : []
-      } finally {
-        this.loading = false
-      }
+      this.items = await listItems()
     },
-    async add(payload) {
-      const newItem = await createItem(payload)
-      // ensure items is array
-      if (!Array.isArray(this.items)) this.items = []
-      this.items.push(newItem)
-      return newItem
+    async fetchOne(id) {
+      return await getItem(id)
     },
-    async updateItem(id, payload) {
+    async create(payload) {
+      const item = await createItem(payload)
+      this.items.push(item)
+      return item
+    },
+    async update(id, payload) {
       const updated = await updateItem(id, payload)
-      const index = this.items.findIndex(i => i.id === id)
-      if (index !== -1) this.items[index] = updated
+      this.items = this.items.map(i => i.id === id ? updated : i)
       return updated
     },
     async remove(id) {
